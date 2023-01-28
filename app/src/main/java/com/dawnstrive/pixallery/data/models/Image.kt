@@ -1,10 +1,14 @@
 package com.dawnstrive.pixallery.data.models
 
+import com.google.gson.annotations.SerializedName
+
 data class Image(
-    val hits: List<Images>
+    @SerializedName("total") val total: Int,
+    @SerializedName("totalHits") val totalHits: Int,
+    @SerializedName("hits") val hits: List<Images>,
 )
 
 data class Images(
-    val id: Int,
-    val largeImageUrl: String,
+    @SerializedName("id") val id: String,
+    @SerializedName("largeImageURL") val largeImageUrl: String
 )

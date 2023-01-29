@@ -1,25 +1,26 @@
 package com.dawnstrive.pixallery.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.RoundedCorner
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.dawnstrive.pixallery.data.models.Category
 import com.dawnstrive.pixallery.databinding.ItemCategoryBinding
+import com.dawnstrive.pixallery.utils.CategoryDiffCallback
 
-class CategoriesAdapter(private var categories: List<Category>) :
-    Adapter<CategoriesAdapter.CategoryHolder>() {
+class CategoriesAdapter(private var categories: ArrayList<Category>) :
+    RecyclerView.Adapter<CategoriesAdapter.CategoryHolder>() {
 
-    fun setCategories(categories: List<Category>){
-        Log.d("MyTag", categories.toString())
-        this.categories = categories
-        notifyDataSetChanged()
+    fun setCategories(categories: List<Category>) {
+
+        val diffCallback = CategoryDiffCallback(this.categories, categories)
+        val diffResults = DiffUtil.calculateDiff(diffCallback)
+        this.categories.clear()
+        this.categories.addAll(categories)
+        diffResults.dispatchUpdatesTo(this)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryHolder {
@@ -43,4 +44,6 @@ class CategoriesAdapter(private var categories: List<Category>) :
     override fun getItemCount(): Int = categories.size
 
     inner class CategoryHolder(val bind: ItemCategoryBinding) : ViewHolder(bind.root)
+
+
 }

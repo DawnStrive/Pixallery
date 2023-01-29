@@ -9,9 +9,13 @@ import retrofit2.http.Query
 
 interface PixabayApi {
 
-    @GET("api/?key=${YOUR_API_KEY}&image_type=photo")
+    @GET("api/")
     suspend fun getImagesByCategory(
+        @Query("key") key: String = YOUR_API_KEY,
+        @Query("image_type") imageType: String = "photo",
         @Query("category") category: String,
         @Query("orientation") orientation: String = "vertical",
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 20,
     ): Response<Image>
 }

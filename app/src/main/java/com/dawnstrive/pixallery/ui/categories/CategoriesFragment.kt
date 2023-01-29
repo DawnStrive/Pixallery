@@ -37,7 +37,7 @@ class CategoriesFragment : Fragment() {
 
         viewModel.loadCategoryImage(categories)
 
-        adapter = CategoriesAdapter(listOf())
+        adapter = CategoriesAdapter(arrayListOf())
         bind.rvCategories.adapter = adapter
         bind.rvCategories.layoutManager = LinearLayoutManager(requireContext())
 

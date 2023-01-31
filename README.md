@@ -1,5 +1,5 @@
 # Pixallery
-A simple gallery with Pixabay api.
+A simple wallpaper app. Pixabay API.
 ## Setup
 To put your api key go to /data/remote/apis/PixabayApi.kt and change YOUR_API_KEY to your api key from Pixabay api.
 

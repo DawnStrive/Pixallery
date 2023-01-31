@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.dawnstrive.pixallery.R
 import com.dawnstrive.pixallery.data.models.Images
 import com.dawnstrive.pixallery.databinding.ItemCategoryBinding
 import com.dawnstrive.pixallery.databinding.ItemImageBinding
@@ -42,6 +43,7 @@ class ImagesAdapter(private val onItemClickListener: OnItemClickListener) :
 
         Glide.with(holder.itemView.context)
             .load(imagePosition)
+            .placeholder(R.drawable.placeholder)
             .into(holder.bind.ivImage)
 
         holder.itemView.setOnClickListener {
@@ -52,7 +54,6 @@ class ImagesAdapter(private val onItemClickListener: OnItemClickListener) :
     }
 
     inner class ImageHolder(val bind: ItemImageBinding) : RecyclerView.ViewHolder(bind.root)
-
     interface OnItemClickListener {
         fun onClick(imageUrl: String)
     }

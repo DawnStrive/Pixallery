@@ -6,11 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.dawnstrive.pixallery.R
 import com.dawnstrive.pixallery.data.models.Category
 import com.dawnstrive.pixallery.databinding.ItemCategoryBinding
 import com.dawnstrive.pixallery.utils.CategoryDiffCallback
 
-class CategoriesAdapter(private var categories: ArrayList<Category>) :
+class CategoriesAdapter(
+    private var categories: ArrayList<Category>,
+    private val onClickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<CategoriesAdapter.CategoryHolder>() {
 
     fun setCategories(categories: List<Category>) {
@@ -36,14 +40,21 @@ class CategoriesAdapter(private var categories: ArrayList<Category>) :
 
         Glide.with(holder.itemView.context)
             .load(categoryPosition.imageUrl)
+            .placeholder(R.drawable.placeholder)
             .into(holder.bind.ivCategory)
 
         holder.bind.tvCategoryName.text = categoryPosition.title
+
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(categoryPosition.title)
+        }
     }
 
     override fun getItemCount(): Int = categories.size
 
     inner class CategoryHolder(val bind: ItemCategoryBinding) : ViewHolder(bind.root)
 
-
+    interface OnItemClickListener {
+        fun onClick(category: String)
+    }
 }

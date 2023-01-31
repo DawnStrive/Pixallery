@@ -9,6 +9,7 @@ object Consts {
 
     // Bundle keys
     const val ARGS_SELECTED_IMAGE_URL = "ARGS_SELECTED_IMAGE_URL"
+    const val ARGS_SELECTED_CATEGORY_TITLE = "ARGS_123"
 
 
 }

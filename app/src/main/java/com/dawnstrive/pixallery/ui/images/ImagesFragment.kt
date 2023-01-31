@@ -1,22 +1,30 @@
 package com.dawnstrive.pixallery.ui.images
 
+import android.content.Context.WINDOW_SERVICE
+import android.graphics.PixelFormat
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dawnstrive.pixallery.R
+import com.dawnstrive.pixallery.data.ImagesRepository
 import com.dawnstrive.pixallery.data.models.Images
+import com.dawnstrive.pixallery.data.remote.ApiManager
 import com.dawnstrive.pixallery.databinding.FragmentImagesBinding
 import com.dawnstrive.pixallery.databinding.ItemImageBinding
 import com.dawnstrive.pixallery.ui.adapters.CategoriesAdapter
 import com.dawnstrive.pixallery.ui.adapters.ImagesAdapter
+import com.dawnstrive.pixallery.ui.adapters.LoadingStateAdapter
 import com.dawnstrive.pixallery.utils.Consts
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -28,13 +36,21 @@ class ImagesFragment : Fragment(), ImagesAdapter.OnItemClickListener {
 
     private val viewModel: ImagesFragmentViewModel by viewModels()
 
-    private var adapter: ImagesAdapter? = null
+    private lateinit var adapter: ImagesAdapter
+
+    private lateinit var loaderStateAdapter: LoadingStateAdapter
+
+    private var chosenCategory = ""
+
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+
+        chosenCategory = arguments?.getString(Consts.ARGS_SELECTED_CATEGORY_TITLE) ?: "nature"
+
         bind = FragmentImagesBinding.inflate(inflater, container, false)
+
         return bind.root
     }
 
@@ -47,7 +63,7 @@ class ImagesFragment : Fragment(), ImagesAdapter.OnItemClickListener {
 
     private fun fetchImages() {
         lifecycleScope.launch {
-            viewModel.fetchImages().distinctUntilChanged().collectLatest {
+            viewModel.fetchImages(chosenCategory)?.distinctUntilChanged()?.collectLatest {
                 adapter?.submitData(it)
             }
         }
@@ -55,7 +71,8 @@ class ImagesFragment : Fragment(), ImagesAdapter.OnItemClickListener {
 
     private fun setupViews() {
         adapter = ImagesAdapter(this@ImagesFragment)
-        bind.rvImages.adapter = adapter
+        loaderStateAdapter = LoadingStateAdapter { adapter.run { retry() } }
+        bind.rvImages.adapter = adapter.withLoadStateFooter(loaderStateAdapter)
         bind.rvImages.layoutManager = GridLayoutManager(requireContext(), 2)
 
     }

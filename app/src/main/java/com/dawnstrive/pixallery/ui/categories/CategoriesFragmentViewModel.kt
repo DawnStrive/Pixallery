@@ -1,6 +1,5 @@
 package com.dawnstrive.pixallery.ui.categories
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,7 +20,6 @@ class CategoriesFragmentViewModel : ViewModel() {
 
         viewModelScope.launch {
             val apiManager = ApiManager.getInstance().create(PixabayApi::class.java)
-
             for (i in 0 until categoryNames.size) {
                 val data = apiManager.getImagesByCategory(category = categoryNames[i]).body()
                 if (data?.hits != null) {

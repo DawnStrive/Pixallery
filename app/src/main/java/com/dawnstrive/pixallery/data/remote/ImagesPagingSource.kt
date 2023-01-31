@@ -1,5 +1,6 @@
 package com.dawnstrive.pixallery.data.remote
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.dawnstrive.pixallery.data.models.Image
@@ -11,16 +12,18 @@ import java.io.IOException
 
 
 class ImagesPagingSource(
-    private val service: PixabayApi
+    private val service: PixabayApi,
+    private val category: String
 ) : PagingSource<Int, Images>() {
     override fun getRefreshKey(state: PagingState<Int, Images>): Int? {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Images> {
         val pageIndex = params?.key ?: DEFAULT_PAGE_INDEX
         return try {
-            val data = service.getImagesByCategory(category = "nature", page = pageIndex)
+            Log.d("MyTag", category)
+            val data = service.getImagesByCategory(category = category, page = pageIndex)
             var response = data.body()?.hits
 
             LoadResult.Page(
